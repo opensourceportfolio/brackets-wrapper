@@ -98,4 +98,8 @@ define(function (require, exports, module) {
 		localStorage.setItem(prefix + 'enabled', !!$(this).hasClass('active'));
     })
     .appendTo($("#main-toolbar .buttons"));
+    
+    if(localStorage.getItem(prefix + 'enabled') === "true") {
+        $("#brackets-wrapper-icon").addClass('active');
+    } 
 });
