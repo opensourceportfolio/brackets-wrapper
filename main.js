@@ -39,7 +39,7 @@ define(function (require, exports, module) {
                 
         if(editor){
             editor.document.replaceRange(symbols[0] + selText + symbols[1], insertionPos, {                 line: insertionPos.line, 
-                ch: insertionPos.ch - selText.length
+                ch: insertionPos.ch + selText.length
             });
             
             if(!selText) {
@@ -51,7 +51,7 @@ define(function (require, exports, module) {
             else {
                 editor.setSelection(
                     {line:insertionPos.line, ch:insertionPos.ch + 1},
-                    {line:insertionPos.line, ch:insertionPos.ch - selText.length + 1}
+                    {line:insertionPos.line, ch:insertionPos.ch + selText.length + 1}
                 );
             }
         }  
