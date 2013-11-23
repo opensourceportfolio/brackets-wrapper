@@ -14,14 +14,20 @@ define(function (require, exports, module) {
         Menus             = brackets.getModule("command/Menus"),
         ProjectManager    = brackets.getModule("project/ProjectManager"),
         FileUtils         = brackets.getModule("file/FileUtils"),
-        DocumentManager   = brackets.getModule("document/DocumentManager");
+        DocumentManager   = brackets.getModule("document/DocumentManager"),
+        PanelManager      = brackets.getModule("view/PanelManager"),
+        ExtensionUtils    = brackets.getModule("utils/ExtensionUtils");
     
     var keymap  = JSON.parse( require('text!keymap.json') ),
-        prefix  = "brackets-wrapper.",
-        enabled = true;
+        prefix  = "brackets-wrapper.";
+
+//    if(localStorage.getItem(prefix + 'enabled') === null) {
+//		localStorage.setItem(prefix + 'enabled', "true");
+//        $("#brackets-wrapper-icon").addClass('active');
+//    }
 
     function handle(symbols) {	
-        if (!enabled) {
+        if (localStorage.getItem(prefix + 'enabled') !== 'true') {
             return new $.Deferred().reject().promise();
         }
         
@@ -62,21 +68,10 @@ define(function (require, exports, module) {
     
         KeyBindingManager.addBinding(id, el.shortcut);        
     });
-    
-    // Create menu item with checkbox that will enable/disable extension
+
     var menu = Menus.getMenu(Menus.AppMenuBar.VIEW_MENU);
-    var cmdEnable = CommandManager.register('Enable Brackets Wrapper', prefix + "enable", function() {
-        this.setChecked(!this.getChecked());
-    });
-    
-    $(cmdEnable).on('checkedStateChange', function() {
-        enabled = cmdEnable.getChecked();
-    });
     
     menu.addMenuDivider();
-    menu.addMenuItem(cmdEnable);
-    cmdEnable.setChecked(enabled); 
-    
     // Create menu item that opens the config .json-file    
     CommandManager.register("Edit Brackets Wrapper", prefix + "open-conf", function() {
         var src = FileUtils.getNativeModuleDirectoryPath(module) + "/keymap.json";
@@ -88,5 +83,19 @@ define(function (require, exports, module) {
         );
     });
     
-    menu.addMenuItem(prefix + "open-conf");    
+    menu.addMenuItem(prefix + "open-conf");
+
+    ExtensionUtils.loadStyleSheet(module, "brackets-wrapper.css");
+
+    $("<a>")
+    .attr({
+        id: "brackets-wrapper-icon",
+        href: "#",
+        title: "Brackets Autocomplete"
+    })
+    .on('click', function() {
+        $(this).toggleClass('active');
+		localStorage.setItem(prefix + 'enabled', !!$(this).hasClass('active'));
+    })
+    .appendTo($("#main-toolbar .buttons"));
 });

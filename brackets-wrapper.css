@@ -1,0 +1,9 @@
+/* Icon */
+#brackets-wrapper-icon {
+    background: url('sprite.png');
+    background-repeat: no-repeat;
+    background-position: 0 -24px !important;
+}
+#brackets-wrapper-icon.active {
+    background-position: 0 0 !important;
+}
