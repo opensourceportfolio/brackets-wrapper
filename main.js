@@ -11,7 +11,10 @@ define(function (require, exports, module) {
     var CommandManager    = brackets.getModule("command/CommandManager"),
         EditorManager     = brackets.getModule("editor/EditorManager"),
         KeyBindingManager = brackets.getModule('command/KeyBindingManager'),
-        Menus             = brackets.getModule("command/Menus");
+        Menus             = brackets.getModule("command/Menus"),
+        ProjectManager    = brackets.getModule("project/ProjectManager"),
+        FileUtils         = brackets.getModule("file/FileUtils"),
+        DocumentManager   = brackets.getModule("document/DocumentManager");
     
     var keymap  = JSON.parse( require('text!keymap.json') ),
         prefix  = "brackets-wrapper.",
@@ -34,8 +37,11 @@ define(function (require, exports, module) {
             });
             
             if(!selText) {
-                editor.setSelection({line:insertionPos.line, ch:insertionPos.ch + 1}); 
-            }   
+                editor.setSelection(
+                    {line:insertionPos.line, ch:insertionPos.ch + 1}
+                ); 
+            }  
+            
             else {
                 editor.setSelection(
                     {line:insertionPos.line, ch:insertionPos.ch + 1},
@@ -48,17 +54,16 @@ define(function (require, exports, module) {
     }
     
     keymap.forEach(function(el){
-        el = el.split(':');
+        var id = prefix + el.shortcut;
         
-        var id = prefix + el[0];
-        
-        CommandManager.register('Handling '+el[0], id, function() {
-            return handle(el[1]);
+        CommandManager.register('Handling ' + el.symbols, id, function() {
+            return handle(el.symbols);
         }); 
     
-        KeyBindingManager.addBinding(id, el[0]);        
+        KeyBindingManager.addBinding(id, el.shortcut);        
     });
     
+    // Create menu item with checkbox that will enable/disable extension
     var menu = Menus.getMenu(Menus.AppMenuBar.VIEW_MENU);
     var cmdEnable = CommandManager.register('Enable Brackets Wrapper', prefix + "enable", function() {
         this.setChecked(!this.getChecked());
@@ -70,5 +75,18 @@ define(function (require, exports, module) {
     
     menu.addMenuDivider();
     menu.addMenuItem(cmdEnable);
-    cmdEnable.setChecked(enabled);   
+    cmdEnable.setChecked(enabled); 
+    
+    // Create menu item that opens the config .json-file    
+    CommandManager.register("Edit Brackets Wrapper", prefix + "open-conf", function() {
+        var src = FileUtils.getNativeModuleDirectoryPath(module) + "/keymap.json";
+        
+        DocumentManager.getDocumentForPath(src).done(
+            function (doc) {
+                DocumentManager.setCurrentDocument(doc);
+            }
+        );
+    });
+    
+    menu.addMenuItem(prefix + "open-conf");    
 });

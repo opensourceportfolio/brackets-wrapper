@@ -1,7 +1,22 @@
 [
-    "Shift-9:()", 
-    "[:[]",
-    "Shift-[:{}",
-    "':''",
-    "Shift-':\"\""
+    {
+        "symbols": "()",
+        "shortcut": "Shift-9"
+    }, 
+    {
+        "symbols": "[]",
+        "shortcut": "["
+    },
+    {
+        "symbols": "{}",
+        "shortcut": "Shift-["
+    },
+    {
+        "symbols": "''",
+        "shortcut": "'"
+    },
+    {
+        "symbols": "\"\"",
+        "shortcut": "Shift-'"
+    }
 ]

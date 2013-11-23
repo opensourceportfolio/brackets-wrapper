@@ -3,7 +3,7 @@
     "title": "Brackets Wrapper",
     "description": "Wrap selected text with braces, curly-braces, parentheses, quotes and double quotes just like Sublime Text does. If no text selected, pressed symbol would be completed with closing symbol ('{' with '}' and so forth)",
     "homepage": "https://github.com/vhornets/brackets-wrapper",
-    "version": "1.0.1",
+    "version": "1.0.2",
     "author": "Vhornets<vhornets@gmail.com>",
     "files": [
         "main.js",
